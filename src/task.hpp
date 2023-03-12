@@ -5,6 +5,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include "logger.hpp"
 
 namespace Task{
 	class Task;
@@ -14,14 +15,16 @@ namespace Task{
 		public:
 			Task();
 			~Task();
-			void run(TaskRunner & tr);
+			void run(TaskRunner *tr);
 	};
 
 	class TaskRunner {
 		public:
 			TaskRunner(size_t nThreads);
 			~TaskRunner();
+			void startThread();
 			void add(Task t);
+			void workerLoop();
 		private:
 			std::queue<Task> tasks;
 			std::mutex queueMutex;
@@ -29,6 +32,6 @@ namespace Task{
 			bool stop;
 			std::vector<std::thread> threads;
 			std::mutex _mutex;
-
+			Logger::Logger logger;
 	};
 }
